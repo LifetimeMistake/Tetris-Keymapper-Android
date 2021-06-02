@@ -56,11 +56,11 @@ int main()
             memset(input_data, 0, GAMEPAD_EVENT_READ_SIZE);
         }
 
-        if(event_count == 0)
+        /*if(event_count == 0)
         {
             //printf("info: Handling dpad without new events\n");
             replay_last_event(event_fd);
-        }
+        }*/
     }
 
     close(fds[0].fd);

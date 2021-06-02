@@ -16,16 +16,27 @@ typedef struct
     long microseconds;
 } timeval_t;
 
-bool inject_tap_gesture(int event_fd, unsigned int location_x, unsigned int location_y)
+bool inject_location_update(int event_fd, unsigned int location_x, unsigned int location_y)
 {
-    //printf("injecting tap event at %d %d\n", location_x, location_y);
-    inject_device_event(event_fd, 3, 57, random_int(10000));
-    inject_device_event(event_fd, 3, 58, 255);
     inject_device_event(event_fd, 3, 53, location_x);
     inject_device_event(event_fd, 3, 54, location_y);
-    inject_device_event(event_fd, 1, 330, 1);
     inject_device_event(event_fd, 0, 0, 0);
 
+    return true;
+}
+
+bool inject_finger_down(int event_fd, unsigned int location_x, unsigned int location_y)
+{
+    inject_device_event(event_fd, 3, 57, random_int(10000));
+    inject_device_event(event_fd, 3, 58, 255);
+    inject_device_event(event_fd, 1, 330, 1);
+    inject_location_update(event_fd, location_x, location_y);
+
+    return true;
+}
+
+bool inject_finger_up(int event_fd)
+{
     inject_device_event(event_fd, 3, 57, -1);
     inject_device_event(event_fd, 1, 330, 0);
     inject_device_event(event_fd, 0, 0, 0);
@@ -33,15 +44,25 @@ bool inject_tap_gesture(int event_fd, unsigned int location_x, unsigned int loca
     return true;
 }
 
+bool inject_tap_gesture(int event_fd, unsigned int location_x, unsigned int location_y)
+{
+    //printf("injecting tap event at %d %d\n", location_x, location_y);
+    inject_finger_down(event_fd, location_x, location_y);
+    inject_finger_up(event_fd);
+
+    return true;
+}
+
 bool inject_swipe_gesture(int event_fd, unsigned int start_x, unsigned int start_y, unsigned int end_x, unsigned int end_y, unsigned int duration)
 {
     //printf("injecting swipe event from %d %d to %d %d with duration %d ms\n", start_x, start_x, end_x, end_y, duration);
-    inject_device_event(event_fd, 3, 57, random_int(10000));
+    /*inject_device_event(event_fd, 3, 57, random_int(10000));
     inject_device_event(event_fd, 3, 58, 255);
     inject_device_event(event_fd, 3, 53, start_x);
     inject_device_event(event_fd, 3, 54, start_y);
     inject_device_event(event_fd, 1, 330, 1);
-    inject_device_event(event_fd, 0, 0, 0);
+    inject_device_event(event_fd, 0, 0, 0);*/
+    inject_finger_down(event_fd, start_x, start_y);
 
     /*timeval_t start, stop;
     gettimeofday(&start, NULL);
@@ -60,15 +81,11 @@ bool inject_swipe_gesture(int event_fd, unsigned int start_x, unsigned int start
 
     usleep((duration/2*1000));
 
-    inject_device_event(event_fd, 3, 53, end_x);
-    inject_device_event(event_fd, 3, 54, end_y);
-    inject_device_event(event_fd, 0, 0, 0);
+    inject_location_update(event_fd, end_x, end_y);
 
     usleep((duration/2*1000));
 
-    inject_device_event(event_fd, 3, 57, -1);
-    inject_device_event(event_fd, 1, 330, 0);
-    inject_device_event(event_fd, 0, 0, 0);
+    inject_finger_up(event_fd);
 
     return true;
 }

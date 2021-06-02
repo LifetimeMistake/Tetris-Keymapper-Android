@@ -23,9 +23,17 @@ int process_dpad_vertical(int event_fd, int value, int game_state)
             }
             break;
         case GAME_STATE_PLAYING:
-            if (value == -1)
+            switch (value)
             {
-                inject_swipe_gesture(event_fd, HARD_DROP_ACTION, TETRIMINO_MOVE_TIME);
+                case -1:
+                    inject_finger_down(event_fd, HARD_DROP_ACTION);
+                    break;
+                case 0:
+                    inject_finger_up(event_fd);
+                    break;
+                case 1:
+                    inject_finger_down(event_fd, SOFT_DROP_ACTION);
+                    break;
             }
             break;
     }
@@ -45,13 +53,17 @@ int process_dpad_horizontal(int event_fd, int value, int game_state)
             }
             break;
         case GAME_STATE_PLAYING:
-            if (value == -1)
+            switch(value)
             {
-                inject_swipe_gesture(event_fd, MOVE_LEFT_ACTION, TETRIMINO_MOVE_TIME);
-            }
-            if (value == 1)
-            {
-                inject_swipe_gesture(event_fd, MOVE_RIGHT_ACTION, TETRIMINO_MOVE_TIME);
+                case -1:
+                    inject_finger_down(event_fd, MOVE_LEFT_ACTION);
+                    break;
+                case 0:
+                    inject_finger_up(event_fd);
+                    break;
+                case 1:
+                    inject_finger_down(event_fd, MOVE_RIGHT_ACTION);
+                    break;
             }
             break;
     }

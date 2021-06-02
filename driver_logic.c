@@ -9,7 +9,7 @@
 #include "dpad_logic.c"
 
 bool debounce = true;
-int DPAD_HAXIS_STATE = 0;
+// int DPAD_HAXIS_STATE = 0;
 int GAME_STATE = GAME_STATE_MENU;
 
 void process_button_event(int event_fd, input_event_t* event)
@@ -62,37 +62,37 @@ void process_dpad_event(int event_fd, input_event_t* event)
             GAME_STATE = process_dpad_vertical(event_fd, event->value, GAME_STATE);
             break;
         case DPAD_HAXIS:
-            if(DPAD_HAXIS_STATE != event->value)
-            {
-                debounce = true;
-            }
-            else if(debounce)
-            {
-                debounce = false;
-                break;
-            }
-            DPAD_HAXIS_STATE = event->value;
+            // if(DPAD_HAXIS_STATE != event->value)
+            // {
+            //     debounce = true;
+            // }
+            // else if(debounce)
+            // {
+            //     debounce = false;
+            //     break;
+            // }
+            // DPAD_HAXIS_STATE = event->value;
             GAME_STATE = process_dpad_horizontal(event_fd, event->value, GAME_STATE);
             break;
     }
 }
 
-void replay_last_event(int event_fd)
-{
-    if (DPAD_HAXIS_STATE == 0)
-    {
-        //printf("info: Nothing to do!\n");
-        return;
-    }
+// void replay_last_event(int event_fd)
+// {
+//     if (DPAD_HAXIS_STATE == 0)
+//     {
+//         //printf("info: Nothing to do!\n");
+//         return;
+//     }
 
-    input_event_t event;
-    memset(&event, 0, sizeof(event));
-    event.event_type = 3;
-    event.event_code = DPAD_HAXIS;
-    event.value = DPAD_HAXIS_STATE;
-    process_dpad_event(event_fd, &event);
-    //free(&event);
-}
+//     input_event_t event;
+//     memset(&event, 0, sizeof(event));
+//     event.event_type = 3;
+//     event.event_code = DPAD_HAXIS;
+//     event.value = DPAD_HAXIS_STATE;
+//     process_dpad_event(event_fd, &event);
+//     //free(&event);
+// }
 
 void process_new_event(int event_fd, input_event_t* event)
 {
