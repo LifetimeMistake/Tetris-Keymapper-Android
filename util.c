@@ -38,17 +38,17 @@ int itoa(int n, char* str)
     return asprintf(&str, "%d", n);
 }
 
-bool srand_init = false;
+// bool srand_init = false;
 
-int random_int(int max)
-{
-    if(!srand_init)
-    {
-        srand(time(NULL));
-    }
+// int random_int(int max)
+// {
+//     if(!srand_init)
+//     {
+//         srand(time(NULL));
+//     }
 
-    return rand() % (max+1);
-}
+//     return rand() % (max+1);
+// }
 
 float lerp (float a, float b, float f) {
     return a + f * (b - a);
